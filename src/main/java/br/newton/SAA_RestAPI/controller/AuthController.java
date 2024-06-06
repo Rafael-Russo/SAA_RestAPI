@@ -12,16 +12,33 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @PostMapping("/register")
+    public UserEntity register(@RequestBody UserEntity request) {
+        return authService.register(request);
+    }
+
     @PostMapping("/login")
     public String login(@RequestBody UserEntity request) {
-        String token = authService.generateToken(request.getUsername());
+        String token = authService.validateUser(request.getUsername(), request.getPassword());
         return token;
     }
 
-    @GetMapping("/username/{token}")
-    public String extractUsername(@PathVariable String token) {
-        String username = authService.extractUsername(token);
-        return username;
+    @GetMapping("/info/{token}")
+    public String extractInfos(@PathVariable String token) {
+        String infos = authService.extractInfos(token);
+        return infos;
+    }
+
+    @Secured({"ROLE_MOD", "ROLE_ADMIN"})
+    @PutMapping("/edit/{id}")
+    public UserEntity atualizar(@PathVariable String id, @RequestBody UserEntity user) {
+        return authService.atualizar(id, user);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/remove/{id}")
+    public void excluir(@PathVariable String id) {
+        authService.excluir(id);
     }
 
     @GetMapping("/user")
@@ -29,9 +46,15 @@ public class AuthController {
         return "User: " + authentication.getName();
     }
 
-    @Secured("ADMIN")
+    @Secured({"ROLE_MOD", "ROLE_ADMIN"})
+    @GetMapping("/mod")
+    public String getModerator(Authentication authentication){
+        return "Moderator: " + authentication.getName();
+    }
+
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin")
-    public String onlyAdmin(Authentication authentication){
-        return "User: " + authentication.getName();
+    public String getAdmin(Authentication authentication){
+        return "Admin: " + authentication.getName();
     }
 }

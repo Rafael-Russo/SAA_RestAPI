@@ -1,5 +1,6 @@
 package br.newton.SAA_RestAPI.config;
 
+import br.newton.SAA_RestAPI.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,10 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final UserRepository userRepository;
+
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,9 +34,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, "/login/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/username/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/register/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/info/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/mod/**").hasAnyRole("MOD", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/edit/**").hasAnyRole("MOD", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/remove/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()
                 ).httpBasic(Customizer.withDefaults());
@@ -36,17 +49,15 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        UserDetails user = User.builder()
-                .username("joao")
-                .password(passwordEncoder().encode("4321"))
-                .roles("USER")
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("1234"))
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin);
+        List<UserDetails> users = userRepository.findAll().stream()
+                .map(user -> User.builder()
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .roles(user.getRole())
+                        .build())
+                .collect(Collectors.toList());
+
+        return new InMemoryUserDetailsManager(users);
     }
 
     @Bean

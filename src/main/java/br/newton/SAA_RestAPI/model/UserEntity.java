@@ -9,10 +9,12 @@ public class UserEntity {
     private String id;
     private String username;
     private String password;
-    private String role;
+    private String role = "USER";
 
-    public UserEntity(String id, String username, String password, String role) {
-        this.id = id;
+    public UserEntity() {
+    }
+
+    public UserEntity(String username, String password, String role) {
         this.username = username;
         this.password = password;
         this.role = role;

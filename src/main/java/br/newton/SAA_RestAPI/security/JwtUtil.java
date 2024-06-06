@@ -24,9 +24,9 @@ public class JwtUtil {
         return secretString;
     }
 
-    public static String generateToken(String username){
+    public static String generateToken(String json){
         String token = Jwts.builder()
-                .subject(username)
+                .subject(json)
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY)
                 .compact();
