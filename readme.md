@@ -56,33 +56,41 @@ Este projeto é uma API REST para o Sistema de Autenticação e Autorização (S
 
 - **POST /register**: Registro de novos usuários.
     - Permissão: Aberta a todos.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/register.png"/>
 
 ### Rotas de Usuário
 
 - **POST /login**: Autenticação de usuários, retorna o token do usuário.
     - Permissão: `USER`, `MOD`, `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/login.png"/>
 
 - **GET /info/{token}**: Extrair informações de um token.
     - Permissão: `USER`, `MOD`, `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/info.png"/>
 
 - **GET /user**: Obtém informações do usuário autenticado.
     - Permissão: `USER`, `MOD`, `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/user.png"/>
 
 ### Rotas de Moderador
 
 - **PUT /edit/{id}**: Atualizar informações de um usuário.
     - Permissão: `MOD`, `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/edit.png"/>
 
 - **GET /mod**: Obtém informações do moderador autenticado.
     - Permissão: `MOD`, `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/mod.png"/>
 
 ### Rotas de Administrador
 
 - **DELETE /remove/{id}**: Remove um usuário pelo ID.
     - Permissão: `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/remove.png"/>
 
 - **GET /admin**: Obtém informações do administrador autenticado.
     - Permissão: `ADMIN`.
+<img src="https://github.com/Rafael-Russo/SAA_RestAPI/blob/master/imgs/admin.png"/>
 
 ## Alterando Configurações de Permissões
 
