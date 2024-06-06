@@ -29,27 +29,27 @@ public class AuthController {
         return infos;
     }
 
-    @Secured({"ROLE_MOD", "ROLE_ADMIN"})
-    @PutMapping("/edit/{id}")
-    public UserEntity atualizar(@PathVariable String id, @RequestBody UserEntity user) {
-        return authService.atualizar(id, user);
-    }
-
-    @Secured("ROLE_ADMIN")
-    @DeleteMapping("/remove/{id}")
-    public void excluir(@PathVariable String id) {
-        authService.excluir(id);
-    }
-
     @GetMapping("/user")
     public String getUser(Authentication authentication){
         return "User: " + authentication.getName();
     }
 
     @Secured({"ROLE_MOD", "ROLE_ADMIN"})
+    @PutMapping("/edit/{id}")
+    public UserEntity atualizar(@PathVariable String id, @RequestBody UserEntity user) {
+        return authService.atualizar(id, user);
+    }
+
+    @Secured({"ROLE_MOD", "ROLE_ADMIN"})
     @GetMapping("/mod")
     public String getModerator(Authentication authentication){
         return "Moderator: " + authentication.getName();
+    }
+
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/remove/{id}")
+    public void excluir(@PathVariable String id) {
+        authService.excluir(id);
     }
 
     @Secured("ROLE_ADMIN")
